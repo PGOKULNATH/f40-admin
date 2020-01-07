@@ -4,10 +4,8 @@ import { Route, Switch } from "react-router-dom";
 import NotFound from "./NotFound.js";
 import HomeContent from './HomeContent';
 import Profile from './Profile';
-import Attendance from './Attendance';
-import Tasks from './Tasks';
-import Score from './Score';
 import Courses from './Courses';
+import Notification from './Notification';
 import Assessments from './Assessments';
 
 const Home = () => {
@@ -27,10 +25,8 @@ const Home = () => {
       <Switch>
         <Route exact path="/" component={HomeContent} />
         <Route exact path={"/Profile"} component={Profile} />
-        <Route exact path={"/Tasks"} component={Tasks} />
-        <Route exact path={"/Score"} component={Score} />
-        <Route exact path={"/Attendance"} component={Attendance} />
         <Route exact path={"/Assessments"} component={Assessments} />
+        <Route exact path={"/Notification"} component={Notification} />
         <Route exact path={"/Courses"} component={Courses} />
         <Route component={NotFound} />
       </Switch>
