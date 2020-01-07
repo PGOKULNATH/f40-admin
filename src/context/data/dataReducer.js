@@ -1,16 +1,8 @@
 import {
   GET_EVENTS,
   EVENTS_FAIL,
-  GET_PROFILE,
-  PROFILE_FAIL,
-  GET_TASKS,
-  TASKS_FAIL,
-  GET_SCORE,
-  SCORE_FAIL,
   GET_ASSESSMENTS,
   ASSESSMENTS_FAIL,
-  GET_ATTENDANCE,
-  ATTENDANCE_FAIL,
   GET_COURSES,
   COURSES_FAIL,
   GET_NOTIFICATIONS,
@@ -34,51 +26,6 @@ export default (state, action) => {
         events_loading : false
       }
 
-    case GET_PROFILE :
-      return {
-        ...state,
-        profile : action.payload,
-        profile_loading : false,
-        profile_error : null
-      };
-
-    case PROFILE_FAIL :
-      return {
-        ...state,
-        profile_error : action.payload,
-        profile_loading : false
-      }
-
-    case GET_TASKS :
-      return {
-        ...state,
-        tasks : action.payload,
-        tasks_loading : false,
-        tasks_error : null
-      }
-
-    case TASKS_FAIL :
-      return {
-        ...state,
-        tasks_error : action.payload,
-        tasks_loading : false
-      }
-
-    case GET_SCORE :
-      return {
-        ...state,
-        score : action.payload,
-        score_loading : false,
-        score_error : null
-      }
-
-    case SCORE_FAIL :
-      return {
-        ...state,
-        score_error : action.payload,
-        score_loading : false
-      }
-
     case GET_ASSESSMENTS :
       return {
         ...state,
@@ -92,21 +39,6 @@ export default (state, action) => {
         ...state,
         assessments_error : action.payload,
         assessments_loading : false
-      }
-
-    case GET_ATTENDANCE :
-      return {
-        ...state,
-        attendance : action.payload,
-        attendance_loading : false,
-        attendance_error : null
-      }
-
-    case ATTENDANCE_FAIL :
-      return {
-        ...state,
-        attendance_error : action.payload,
-        attendance_loading : false
       }
 
     case GET_COURSES :
