@@ -20,8 +20,7 @@ export default (state, action) => {
       }
 
     case LOGIN_FAIL :
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.clear()
       return {
         ...state,
         token : null,
@@ -31,8 +30,7 @@ export default (state, action) => {
       }
 
     case LOGOUT :
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+      localStorage.clear()
       return {
         ...state,
         token : null,

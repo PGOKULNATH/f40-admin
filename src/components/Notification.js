@@ -137,9 +137,9 @@ const Notification = () => {
       </div>
       <div className="row mt-2" style={{marginLeft:'5px'}}>
         {
-          notifications.length > 0 && notifications.map(item =>
+          notifications.length > 0 && notifications.map((item,i) =>
             <div className="col-12 mb-2" key={item._id} style={{border: '1px solid gray', boxShadow:'0px 0px 2px 2px gray', padding:'1px'}}>
-              <h1>{item.title}</h1>
+              <h1>{i+1}. {item.title}</h1>
               <p> &nbsp; {item.desc}</p>
             </div>
           )

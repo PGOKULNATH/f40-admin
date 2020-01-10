@@ -1,6 +1,12 @@
 import {
   GET_EVENTS,
   EVENTS_FAIL,
+  GET_PROFILE,
+  PROFILE_FAIL,
+  GET_STUDENTS,
+  STUDENTS_FAIL,
+  GET_ATTENDANCE,
+  ATTENDANCE_FAIL,
   GET_ASSESSMENTS,
   ASSESSMENTS_FAIL,
   GET_COURSES,
@@ -24,6 +30,51 @@ export default (state, action) => {
         ...state,
         events_error : action.payload,
         events_loading : false
+      }
+
+    case GET_PROFILE :
+      return {
+        ...state,
+        profile : action.payload,
+        profile_loading : false,
+        profile_error : null
+      };
+
+    case PROFILE_FAIL :
+      return {
+        ...state,
+        profile_error : action.payload,
+        profile_loading : false
+      }
+
+    case GET_STUDENTS :
+      return {
+        ...state,
+        students : action.payload,
+        students_loading : false,
+        students_error : null
+      };
+
+    case STUDENTS_FAIL :
+      return {
+        ...state,
+        students_error : action.payload,
+        students_loading : false
+      }
+
+    case GET_ATTENDANCE :
+      return {
+        ...state,
+        attendance : action.payload,
+        attendance_loading : false,
+        attendance_error : null
+      }
+
+    case ATTENDANCE_FAIL :
+      return {
+        ...state,
+        attendance_error : action.payload,
+        attendance_loading : false
       }
 
     case GET_ASSESSMENTS :
