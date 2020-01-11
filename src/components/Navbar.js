@@ -10,13 +10,30 @@ const MyNavbar = () => {
   const {user, logout} = userContext;
 
   const dataContext = useContext(DataContext);
-  const { getEvents, getNotifications, getAssessments, getCourses } = dataContext;
+  const {
+     getEvents, getNotifications, getAssessments, getCourses, getAttendance,
+     getStudents, getSmentors, getFmentors,
+     getProfile, getsmProfile, getfmProfile,
+  } = dataContext;
 
   useEffect(()=>{
     getEvents();
     getNotifications();
     getAssessments();
     getCourses();
+    getStudents();
+    getSmentors();
+    getFmentors();
+    if(localStorage.getItem('student') !== null){
+      getProfile();
+      getAttendance();
+    }
+    else if(localStorage.getItem('smentor') !== null){
+      getsmProfile();
+    }
+    else if(localStorage.getItem('fmentor') !== null){
+      getfmProfile();
+    }
     //eslint-disable-next-line
   },[])
 
@@ -33,6 +50,7 @@ const MyNavbar = () => {
         <Nav className="mr-auto" >
           <Link className="nav-link" style={{color : 'white'}} to={"/"}>Home</Link>
           <Link className="nav-link" to={"/Profile"} style={{color : 'white'}}>Profile</Link>
+          <Link className="nav-link" to={"/Attendance"} style={{color : 'white'}}>Attendance</Link>
           <Link className="nav-link" to={"/Assessments"} style={{color : 'white'}}>Assessments</Link>
           <Link className="nav-link" to={"/Notification"} style={{color : 'white'}}>Notification</Link>
           <Link className="nav-link" to={"/Courses"} style={{color : 'white'}}> Courses </Link>

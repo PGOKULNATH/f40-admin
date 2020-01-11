@@ -3,8 +3,16 @@ import {
   EVENTS_FAIL,
   GET_PROFILE,
   PROFILE_FAIL,
+  GET_SMPROFILE,
+  SMPROFILE_FAIL,
+  GET_FMPROFILE,
+  FMPROFILE_FAIL,
   GET_STUDENTS,
   STUDENTS_FAIL,
+  GET_STUDENT_MENTORS,
+  STUDENT_MENTOR_FAIL,
+  GET_FACULTY_MENTOR,
+  FACULTY_MENTOR_FAIL,
   GET_ATTENDANCE,
   ATTENDANCE_FAIL,
   GET_ASSESSMENTS,
@@ -47,6 +55,36 @@ export default (state, action) => {
         profile_loading : false
       }
 
+    case GET_SMPROFILE :
+      return {
+        ...state,
+        smprofile : action.payload,
+        smprofile_loading : false,
+        smprofile_error : null
+      };
+
+    case SMPROFILE_FAIL :
+      return {
+        ...state,
+        smprofile_error : action.payload,
+        smprofile_loading : false
+      }
+
+    case GET_FMPROFILE :
+      return {
+        ...state,
+        fmprofile : action.payload,
+        fmprofile_loading : false,
+        fmprofile_error : null
+      };
+
+    case FMPROFILE_FAIL :
+      return {
+        ...state,
+        fmprofile_error : action.payload,
+        fmprofile_loading : false
+      }
+
     case GET_STUDENTS :
       return {
         ...state,
@@ -60,6 +98,36 @@ export default (state, action) => {
         ...state,
         students_error : action.payload,
         students_loading : false
+      }
+
+    case GET_STUDENT_MENTORS :
+      return {
+        ...state,
+        smentors : action.payload,
+        smentors_loading : false,
+        smentors_error : null
+      };
+
+    case STUDENT_MENTOR_FAIL :
+      return {
+        ...state,
+        smentors_error : action.payload,
+        smentors_loading : false
+      }
+
+    case GET_FACULTY_MENTOR :
+      return {
+        ...state,
+        fmentors : action.payload,
+        fmentors_loading : false,
+        fmentors_error : null
+      };
+
+    case FACULTY_MENTOR_FAIL :
+      return {
+        ...state,
+        fmentors_error : action.payload,
+        fmentors_loading : false
       }
 
     case GET_ATTENDANCE :

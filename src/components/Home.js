@@ -7,6 +7,7 @@ import Profile from './Profile';
 import Courses from './Courses';
 import Notification from './Notification';
 import Assessments from './Assessments';
+import Attendance from './Attendance';
 
 const Home = () => {
   return (
@@ -25,6 +26,7 @@ const Home = () => {
       <Switch>
         <Route exact path="/" component={HomeContent} />
         <Route exact path={"/Profile"} component={Profile} />
+        <Route exact path={"/Attendance"} component={Attendance} />
         <Route exact path={"/Assessments"} component={Assessments} />
         <Route exact path={"/Notification"} component={Notification} />
         <Route exact path={"/Courses"} component={Courses} />
