@@ -86,7 +86,7 @@ const DataState = props => {
 
   const getProfile = () => {
 
-    axios.get(server + '/studentprofiledetails?rollNo=' + localStorage.getItem('student'))
+    axios.get(server + '/studentprofiledetails?rollNo=' + localStorage.getItem('astudent'))
     .then((res) => dispatch({
       type : GET_PROFILE,
       payload : res.data
@@ -96,7 +96,7 @@ const DataState = props => {
 
   const getsmProfile = () => {
 
-    axios.get(server + '/mentorprofiledetails?rollNo=' + localStorage.getItem('smentor'))
+    axios.get(server + '/mentorprofiledetails?rollNo=' + localStorage.getItem('asmentor'))
     .then((res) => dispatch({
       type : GET_SMPROFILE,
       payload : res.data
@@ -106,7 +106,7 @@ const DataState = props => {
 
   const getfmProfile = () => {
 
-    axios.get(server + '/mentorprofiledetails?rollNo=' + localStorage.getItem('fmentor'))
+    axios.get(server + '/mentorprofiledetails?rollNo=' + localStorage.getItem('afmentor'))
     .then((res) => dispatch({
       type : GET_FMPROFILE,
       payload : res.data
@@ -165,7 +165,7 @@ const DataState = props => {
   const getAttendance = async () => {
 
     try {
-      const res =  await axios.get(server + '/studentattendance?rollNo=' + localStorage.getItem('student'));
+      const res =  await axios.get(server + '/studentattendance?rollNo=' + localStorage.getItem('astudent'));
       dispatch({
         type : GET_ATTENDANCE,
         payload : res.data.dates

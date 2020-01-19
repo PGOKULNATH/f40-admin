@@ -1,4 +1,5 @@
 import React, {useState, useContext, useEffect} from 'react';
+import Error from './Error';
 import Loading from './Loading';
 import axios from 'axios';
 import server from '../config/server';
@@ -33,11 +34,12 @@ const Attendance = () => {
     })
 
   const postAtt = (e) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     e.preventDefault();
     let attendance = {};
     let day = date.slice(8,10), month = date.slice(5,7) , year = date.slice(0,4);
     attendance.date = day+'/'+month+'/'+year;
+    // eslint-disable-next-line
     students.map(student => {
       if(att[student]===undefined){
         attendance[student] = false
@@ -69,7 +71,7 @@ const Attendance = () => {
 
     else if(students_error){
       console.log(students_error);
-      return <h1>Something goes wrong</h1>
+      return <Error />
     }
 
     return(

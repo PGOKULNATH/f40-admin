@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {Modal, ModalHeader, ModalBody, CustomInput} from 'reactstrap';
 import Loading from './Loading';
+import Error from './Error';
 import axios from 'axios';
 import server from '../config/server';
 import { Card, Table } from "react-bootstrap";
@@ -26,20 +27,20 @@ const Profile = () => {
 
   //this will load student details if localStorage have student
   useEffect(() => {
-    if(localStorage.getItem('type') !== null){
+    if(localStorage.getItem('atype') !== null){
       setPerson({
         ...person,
-        type : localStorage.getItem('type')
+        type : localStorage.getItem('atype')
       })
     }
-    if(localStorage.getItem('student') !== null){
+    if(localStorage.getItem('astudent') !== null){
       getProfile();
       getAttendance();
     }
-    else if(localStorage.getItem('smentor') !== null){
+    else if(localStorage.getItem('asmentor') !== null){
       getsmProfile();
     }
-    else if(localStorage.getItem('fmentor') !== null){
+    else if(localStorage.getItem('afmentor') !== null){
       getfmProfile();
     }
     getStudents();
@@ -48,6 +49,44 @@ const Profile = () => {
 
     //eslint-disable-next-line
   },[])
+
+  const [newpwd, setnewpwd] = useState({
+    otp : '',
+    pwd : ''
+  });
+  const { otp, pwd } = newpwd;
+  const [isnewpwdModalOpen, togglenewpwdModal] = useState(false)
+
+  const onnewpwdChange = e => setnewpwd({
+    ...newpwd,
+    [e.target.name] : e.target.value
+  });
+
+  const onChangepwd = () => {
+    let user = {};
+    user.username = localStorage.getItem('auser');
+
+    axios.post(server + '/otprequestadmin',user)
+    .then(()=>{
+      togglenewpwdModal(!isnewpwdModalOpen)
+    })
+    .catch(err => console.log(err))
+  }
+
+  const submitnewpwd = e => {
+    e.preventDefault();
+
+    let userpwd = {};
+    userpwd.username = localStorage.getItem('auser');
+    userpwd.password = pwd;
+    userpwd.OTP = otp;
+
+    axios.post(server + '/passwordchange',userpwd)
+    .then(()=>{
+      togglenewpwdModal(!isnewpwdModalOpen)
+    })
+    .catch(err => console.log(err))
+  }
 
   //set a person we are going to update
   const [person, setPerson] = useState({
@@ -196,7 +235,7 @@ const Profile = () => {
 
   //set update model when click update profile button
   const onClickProfile = () => {
-    if(localStorage.getItem('student') !== null){
+    if(localStorage.getItem('astudent') !== null){
       toggleProfileUpdateModal(!isProfileUpdateModalOpen);
       setProfileUpdate({
         rollNo : profile.rollNo,
@@ -249,7 +288,7 @@ const Profile = () => {
 
   //function to create profile
   const addProfile = (event) => {
-    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     var formData = new FormData(event.target);
     toggleProfileAddModal(!isProfileAddModalOpen);
@@ -264,8 +303,8 @@ const Profile = () => {
         setProfileAdd({
           addRollNo : ''
         })
-        localStorage.setItem('student',addRollNo);
-        localStorage.setItem('type',type);
+        localStorage.setItem('astudent',addRollNo);
+        localStorage.setItem('atype',type);
         getProfile();
         getAttendance();
       })
@@ -275,7 +314,7 @@ const Profile = () => {
 
   //function to update profile
   const updateProfile = (event) => {
-    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     var formData = new FormData(event.target);
     toggleProfileUpdateModal(!isProfileUpdateModalOpen);
@@ -303,11 +342,11 @@ const Profile = () => {
 
   //function to delete profile
   const deleteProfile = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
-    axios.get(server+'/removestudentprofiledetails?rollNo='+localStorage.getItem('student'), {headers})
+    axios.get(server+'/removestudentprofiledetails?rollNo='+localStorage.getItem('astudent'), {headers})
     .then(()=>{
-      axios.delete(server+'/user?username='+localStorage.getItem('student'),{headers})
+      axios.delete(server+'/user?username='+localStorage.getItem('astudent'),{headers})
       .then(()=>{
         onClickClear();
       })
@@ -316,7 +355,7 @@ const Profile = () => {
 
   //set update model when click update profile button
   const onClicksmProfile = () => {
-    if(localStorage.getItem('smentor') !== null){
+    if(localStorage.getItem('asmentor') !== null){
       togglesmProfileUpdateModal(!issmProfileUpdateModalOpen);
       setsmProfileUpdate({
         rollNo : smprofile.rollNo,
@@ -329,7 +368,7 @@ const Profile = () => {
 
   //function to create profile
   const addsmProfile = (event) => {
-    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     var formData = new FormData(event.target);
     togglesmProfileAddModal(!issmProfileAddModalOpen);
@@ -344,8 +383,8 @@ const Profile = () => {
         setsmProfileAdd({
           addsmRollNo : ''
         })
-        localStorage.setItem('smentor',addsmRollNo);
-        localStorage.setItem('type',type);
+        localStorage.setItem('asmentor',addsmRollNo);
+        localStorage.setItem('atype',type);
         getsmProfile();
       })
     })
@@ -354,7 +393,7 @@ const Profile = () => {
 
   //function to update profile
   const updatesmProfile = (event) => {
-    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     var formData = new FormData(event.target);
     togglesmProfileUpdateModal(!issmProfileUpdateModalOpen);
@@ -376,11 +415,11 @@ const Profile = () => {
 
   //function to delete profile
   const deletesmProfile = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
-    axios.get(server+'/removementorprofiledetails?rollNo='+localStorage.getItem('smentor'), {headers})
+    axios.get(server+'/removementorprofiledetails?rollNo='+localStorage.getItem('asmentor'), {headers})
     .then(()=>{
-      axios.delete(server+'/user?username='+localStorage.getItem('smentor'),{headers})
+      axios.delete(server+'/user?username='+localStorage.getItem('asmentor'),{headers})
       .then(()=>{
         onClickClear();
       })
@@ -389,7 +428,7 @@ const Profile = () => {
 
   //set update model when click update profile button
   const onClickfmProfile = () => {
-    if(localStorage.getItem('fmentor') !== null){
+    if(localStorage.getItem('afmentor') !== null){
       togglefmProfileUpdateModal(!isfmProfileUpdateModalOpen);
       setfmProfileUpdate({
         rollNo : fmprofile.rollNo,
@@ -402,7 +441,7 @@ const Profile = () => {
 
   //function to create profile
   const addfmProfile = (event) => {
-    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     var formData = new FormData(event.target);
     togglefmProfileAddModal(!isfmProfileAddModalOpen);
@@ -417,8 +456,8 @@ const Profile = () => {
         setfmProfileAdd({
           addfmRollNo : ''
         })
-        localStorage.setItem('smentor',addfmRollNo);
-        localStorage.setItem('type',type);
+        localStorage.setItem('afmentor',addfmRollNo);
+        localStorage.setItem('atype',type);
         getfmProfile();
       })
     })
@@ -427,7 +466,7 @@ const Profile = () => {
 
   //function to update profile
   const updatefmProfile = (event) => {
-    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     var formData = new FormData(event.target);
     togglefmProfileUpdateModal(!isfmProfileUpdateModalOpen);
@@ -449,11 +488,11 @@ const Profile = () => {
 
   //function to delete profile
   const deletefmProfile = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
-    axios.get(server+'/removementorprofiledetails?rollNo='+localStorage.getItem('fmentor'), {headers})
+    axios.get(server+'/removementorprofiledetails?rollNo='+localStorage.getItem('afmentor'), {headers})
     .then(()=>{
-      axios.delete(server+'/user?username='+localStorage.getItem('fmentor'),{headers})
+      axios.delete(server+'/user?username='+localStorage.getItem('afmentor'),{headers})
       .then(()=>{
         onClickClear();
       })
@@ -462,11 +501,11 @@ const Profile = () => {
 
   //function to add achievement
   const addAchievement = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     const achieve = {'achievement' : achievementAdd};
     toggleAchieveAddModal(!isAchieveAddModalOpen);
-    axios.post(server+'/addachievement?rollNo='+localStorage.getItem('student'), achieve, {headers})
+    axios.post(server+'/addachievement?rollNo='+localStorage.getItem('astudent'), achieve, {headers})
     .then(() => {
       setTimeout(() => {
         getProfile()
@@ -477,11 +516,11 @@ const Profile = () => {
 
   //function to delete achievement
   const deleteAchievement = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     const id = {'id':achiveDeleteId-1};
     toggleAchieveDeleteModal(!isAchieveDeleteModalOpen);
-    axios.post(server+'/removeachievement?rollNo='+localStorage.getItem('student'), id, {headers})
+    axios.post(server+'/removeachievement?rollNo='+localStorage.getItem('astudent'), id, {headers})
     .then(() => {
       getProfile()
       setAchiveDeleteId(1)
@@ -490,24 +529,24 @@ const Profile = () => {
 
   //function to add achievement
   const addMentees = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     const mentee = {'rollNo' : menteesRollNo};
     toggleMenteesAddModal(!isMenteesAddModalOpen);
     let user;
-    if(localStorage.getItem('type') === 'Student Mentor'){
-      user = localStorage.getItem('smentor')
+    if(localStorage.getItem('atype') === 'Student Mentor'){
+      user = localStorage.getItem('asmentor')
     }
-    else if(localStorage.getItem('type') === 'Faculty Mentor'){
-      user = localStorage.getItem('fmentor')
+    else if(localStorage.getItem('atype') === 'Faculty Mentor'){
+      user = localStorage.getItem('afmentor')
     }
     axios.post(server+'/addmentee?rollNo='+user, mentee, {headers})
     .then(() => {
       setTimeout(() => {
-        if(localStorage.getItem('type') === 'Student Mentor'){
+        if(localStorage.getItem('atype') === 'Student Mentor'){
           getsmProfile()
         }
-        else if(localStorage.getItem('type') === 'Faculty Mentor'){
+        else if(localStorage.getItem('atype') === 'Faculty Mentor'){
           getfmProfile()
         }
       },1000)
@@ -517,23 +556,23 @@ const Profile = () => {
 
   //function to delete mentee
   const deleteMentees = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     const id = {'id':menteesDeleteId-1};
     let user;
-    if(localStorage.getItem('type') === 'Student Mentor'){
-      user = localStorage.getItem('smentor')
+    if(localStorage.getItem('atype') === 'Student Mentor'){
+      user = localStorage.getItem('asmentor')
     }
-    else if(localStorage.getItem('type') === 'Faculty Mentor'){
-      user = localStorage.getItem('fmentor')
+    else if(localStorage.getItem('atype') === 'Faculty Mentor'){
+      user = localStorage.getItem('afmentor')
     }
     toggleMenteesDeleteModal(!isMenteesDeleteModalOpen);
     axios.post(server+'/removementee?rollNo='+user, id, {headers})
     .then(() => {
-      if(localStorage.getItem('type') === 'Student Mentor'){
+      if(localStorage.getItem('atype') === 'Student Mentor'){
         getsmProfile()
       }
-      else if(localStorage.getItem('type') === 'Faculty Mentor'){
+      else if(localStorage.getItem('atype') === 'Faculty Mentor'){
         getfmProfile()
       }
     });
@@ -542,7 +581,7 @@ const Profile = () => {
 
   //function to update attendance
   const updateAttendance = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     let att = {};
     let day = attDate.slice(8,10), month = attDate.slice(5,7) , year = attDate.slice(0,4);
@@ -554,7 +593,7 @@ const Profile = () => {
       att.value = true;
     }
     toggleAttendanceUpdateModal(!isAttendanceUpdateModalOpen);
-    axios.post(server+'/changeattendance?rollNo='+localStorage.getItem('student'),att,{headers})
+    axios.post(server+'/changeattendance?rollNo='+localStorage.getItem('astudent'),att,{headers})
     .then(() => {
       getAttendance();
       setAttendanceUpdate({
@@ -592,23 +631,23 @@ const Profile = () => {
 
     else if(profile_error){
       console.log(profile_error);
-      return <h1>Something goes wrong</h1>
+      return <Error />
     }
 
     return(
       <div className="container">
         <div className="row">
           <div className="col-12 col-md-6">
-            <h1>{localStorage.getItem('student')} Profile</h1>
+            <h1>{localStorage.getItem('astudent')} Profile</h1>
           </div>
           <div className="col-12 col-md-6 d-none d-md-block">
-            {localStorage.getItem('student') !== null && <button onClick={deleteProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
-            {localStorage.getItem('student') !== null && <button onClick={onClickProfile} className="btn btn-success float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
+            {localStorage.getItem('astudent') !== null && <button onClick={deleteProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
+            {localStorage.getItem('astudent') !== null && <button onClick={onClickProfile} className="btn btn-success float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
           </div>
           <div className="col-12 d-md-none">
             <center>
-              {localStorage.getItem('student') !== null && <button onClick={() => toggleProfileUpdateModal(!isProfileUpdateModalOpen)} className="btn btn-success bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
-              {localStorage.getItem('student') !== null && <button onClick={deleteProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
+              {localStorage.getItem('astudent') !== null && <button onClick={() => toggleProfileUpdateModal(!isProfileUpdateModalOpen)} className="btn btn-success bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
+              {localStorage.getItem('astudent') !== null && <button onClick={deleteProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
             </center>
           </div>
         </div>
@@ -773,7 +812,7 @@ const Profile = () => {
 
     else if(attendance_error){
       console.log(attendance_error);
-      return <h1>Something goes wrong</h1>
+      return <Error />
     }
 
     return(
@@ -854,12 +893,12 @@ const Profile = () => {
         <Card className="col-11">
           <ol>
             {
-              (localStorage.getItem('type') === 'Student Mentor') ? (
+              (localStorage.getItem('atype') === 'Student Mentor') ? (
                 (smprofile.mentees && smprofile.mentees.length > 0) ? (
                   smprofile.mentees.map((mentee,i)=><li key={i}>{mentee}</li>)
                 ) : null
               ) : (
-                (localStorage.getItem('type') === 'Faculty Mentor') ? (
+                (localStorage.getItem('atype') === 'Faculty Mentor') ? (
                   (fmprofile.mentees && fmprofile.mentees.length > 0) ? (
                     fmprofile.mentees.map((mentee,i)=><li key={i}>{mentee}</li>)
                   ) : null
@@ -890,7 +929,7 @@ const Profile = () => {
           <form onSubmit = {deleteMentees}>
             <div className="form-group row">
               <label className="form-label col-12">Id Number</label>
-              <div className="col-12"><input type="number" min="1" max={localStorage.getItem('type')==='Student Mentor' ? smprofile.mentees.length : (localStorage.getItem('type') === 'Faculty Mentor' ? fmprofile.mentees.length : 1) } onChange={onChangeMenteesDelete} className="form-control" value={menteesDeleteId} name="menteesDeleteId"/></div>
+              <div className="col-12"><input type="number" min="1" max={localStorage.getItem('atype')==='Student Mentor' ? smprofile.mentees.length : (localStorage.getItem('atype') === 'Faculty Mentor' ? fmprofile.mentees.length : 1) } onChange={onChangeMenteesDelete} className="form-control" value={menteesDeleteId} name="menteesDeleteId"/></div>
             </div>
             <button type="button" className="btn btn-success" onClick={() => toggleMenteesDeleteModal(!isMenteesDeleteModalOpen)}>Cancel</button> &nbsp;
             <button type="submit" className="btn btn-primary pl-4 pr-4">Delete</button>
@@ -910,23 +949,23 @@ const Profile = () => {
 
     else if(smprofile_error){
       console.log(smprofile_error);
-      return <h1>Something goes wrong</h1>
+      return <Error />
     }
 
     return(
       <div className="container">
         <div className="row">
           <div className="col-12 col-md-6">
-            <h1>{localStorage.getItem('smentor')} Profile</h1>
+            <h1>{localStorage.getItem('asmentor')} Profile</h1>
           </div>
           <div className="col-12 col-md-6 d-none d-md-block">
-            {localStorage.getItem('smentor') !== null && <button onClick={deletesmProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
-            {localStorage.getItem('smentor') !== null && <button onClick={onClicksmProfile} className="btn btn-success float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
+            {localStorage.getItem('asmentor') !== null && <button onClick={deletesmProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
+            {localStorage.getItem('asmentor') !== null && <button onClick={onClicksmProfile} className="btn btn-success float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
           </div>
           <div className="col-12 d-md-none">
             <center>
-              {localStorage.getItem('smentor') !== null && <button onClick={() => togglesmProfileUpdateModal(!issmProfileUpdateModalOpen)} className="btn btn-success bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
-              localStorage.getItem('smentor') !== null<button onClick={deletesmProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
+              {localStorage.getItem('asmentor') !== null && <button onClick={() => togglesmProfileUpdateModal(!issmProfileUpdateModalOpen)} className="btn btn-success bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
+              {localStorage.getItem('asmentor') !== null && <button onClick={deletesmProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
             </center>
           </div>
         </div>
@@ -999,23 +1038,23 @@ const Profile = () => {
 
     else if(fmprofile_error){
       console.log(fmprofile_error);
-      return <h1>Something goes wrong</h1>
+      return <Error />
     }
 
     return(
       <div className="container">
         <div className="row">
           <div className="col-12 col-md-6">
-            <h1>{localStorage.getItem('fmentor')} Profile</h1>
+            <h1>{localStorage.getItem('afmentor')} Profile</h1>
           </div>
           <div className="col-12 col-md-6 d-none d-md-block">
-            {localStorage.getItem('fmentor') !== null && <button onClick={deletefmProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
-            {localStorage.getItem('fmentor') !== null && <button onClick={onClickfmProfile} className="btn btn-success float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
+            {localStorage.getItem('afmentor') !== null && <button onClick={deletefmProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
+            {localStorage.getItem('afmentor') !== null && <button onClick={onClickfmProfile} className="btn btn-success float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
           </div>
           <div className="col-12 d-md-none">
             <center>
-              {localStorage.getItem('fmentor') !== null && <button onClick={() => togglefmProfileUpdateModal(!isfmProfileUpdateModalOpen)} className="btn btn-success bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
-              localStorage.getItem('fmentor') !== null<button onClick={deletefmProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
+              {localStorage.getItem('afmentor') !== null && <button onClick={() => togglefmProfileUpdateModal(!isfmProfileUpdateModalOpen)} className="btn btn-success bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Update</button>}
+              {localStorage.getItem('afmentor') !== null && <button onClick={deletefmProfile} className="btn btn-danger float-md-right bold pl-3 pr-3 mr-1 font-weight-bold" type="button">Delete</button>}
             </center>
           </div>
         </div>
@@ -1084,8 +1123,8 @@ const Profile = () => {
     if(type === 'Student'){
       const user = students.filter((student)=>username===student);
       if(user.length > 0){
-        localStorage.setItem('student',username);
-        localStorage.setItem('type',type);
+        localStorage.setItem('astudent',username);
+        localStorage.setItem('atype',type);
         getProfile();
         getAttendance();
       }
@@ -1096,8 +1135,8 @@ const Profile = () => {
     else if(type === 'Student Mentor'){
       const user = smentors.filter((student)=>username===student);
       if(user.length > 0){
-        localStorage.setItem('smentor',username);
-        localStorage.setItem('type',type);
+        localStorage.setItem('asmentor',username);
+        localStorage.setItem('atype',type);
         getsmProfile();
       }
       else{
@@ -1107,8 +1146,8 @@ const Profile = () => {
     else if(type === 'Faculty Mentor'){
       const user = fmentors.filter((student)=>username===student);
       if(user.length > 0){
-        localStorage.setItem('fmentor',username);
-        localStorage.setItem('type',type);
+        localStorage.setItem('afmentor',username);
+        localStorage.setItem('atype',type);
         getfmProfile();
       }
       else{
@@ -1118,17 +1157,17 @@ const Profile = () => {
   }
 
   const onClickClear = () => {
-    if(localStorage.getItem('student') !== null){
-      localStorage.removeItem('student')
-      localStorage.removeItem('type')
+    if(localStorage.getItem('astudent') !== null){
+      localStorage.removeItem('astudent')
+      localStorage.removeItem('atype')
     }
-    if(localStorage.getItem('smentor') !== null){
-      localStorage.removeItem('smentor')
-      localStorage.removeItem('type')
+    if(localStorage.getItem('asmentor') !== null){
+      localStorage.removeItem('asmentor')
+      localStorage.removeItem('atype')
     }
-    if(localStorage.getItem('fmentor') !== null){
-      localStorage.removeItem('fmentor')
-      localStorage.removeItem('type')
+    if(localStorage.getItem('afmentor') !== null){
+      localStorage.removeItem('afmentor')
+      localStorage.removeItem('atype')
     }
     getStudents();
     getSmentors();
@@ -1143,7 +1182,7 @@ const Profile = () => {
 
     else if(students_error){
       console.log(students_error);
-      return <h1>Something goes wrong</h1>
+      return <Error />
     }
 
     return(
@@ -1162,7 +1201,7 @@ const Profile = () => {
 
     else if(smentors_error){
       console.log(smentors_error);
-      return <h1>Something goes wrong</h1>
+      return <Error />
     }
 
     return(
@@ -1181,7 +1220,7 @@ const Profile = () => {
 
     else if(fmentors_error){
       console.log(fmentors_error);
-      return <h1>Something goes wrong</h1>
+      return <Error />
     }
 
     return(
@@ -1194,7 +1233,7 @@ const Profile = () => {
   }
 
   const getDetails = () => {
-    if(localStorage.getItem('student') !== null){
+    if(localStorage.getItem('astudent') !== null){
       return(
         <>
           {showProfile()}
@@ -1202,14 +1241,14 @@ const Profile = () => {
         </>
       )
     }
-    else if(localStorage.getItem('smentor') !== null){
+    else if(localStorage.getItem('asmentor') !== null){
       return(
         <>
           {showStudentMentorProfile()}
         </>
       )
     }
-    else if(localStorage.getItem('fmentor') !== null){
+    else if(localStorage.getItem('afmentor') !== null){
       return(
         <>
           {showFacultyMentorProfile()}
@@ -1242,8 +1281,16 @@ const Profile = () => {
 
   return(
     <div className="container">
+      <div className="row m-1">
+        <div className="col-5 p-2">
+          Hello {localStorage.getItem('auser')}
+        </div>
+        <div className="col-7">
+          <button className="btn btn-success float-right" onClick={onChangepwd}>Change Password</button>
+        </div>
+      </div>
       <div className="row justify-content-center">
-        {(localStorage.getItem('student') !== null || localStorage.getItem('smentor') !== null || localStorage.getItem('staff') !==null ) && <h1>{type}</h1>}
+        {(localStorage.getItem('astudent') !== null || localStorage.getItem('asmentor') !== null || localStorage.getItem('afmentor') !==null ) && <h1>{type}</h1>}
       </div>
       <div className="row m-1">
         <div className="col-12 d-none d-md-block">
@@ -1254,7 +1301,7 @@ const Profile = () => {
               </div>
               <div className="col-4 col-md-3">
                 {
-                  (localStorage.getItem('student') !== null || localStorage.getItem('smentor') !== null || localStorage.getItem('staff') !==null ) ?
+                  (localStorage.getItem('astudent') !== null || localStorage.getItem('asmentor') !== null || localStorage.getItem('afmentor') !==null ) ?
                   <select value={type} disabled name="type" className="form-control" style={{borderRadius : '5px', boxShadow : '0px 0px 2px gray'}} onChange={onPersonChange}>
                     <option>Student</option>
                     <option>Student Mentor</option>
@@ -1268,9 +1315,9 @@ const Profile = () => {
                 }
               </div>
               <div className="col-8 col-md-5">
-                {(localStorage.getItem('student') === null && localStorage.getItem('smentor') === null && localStorage.getItem('fmentor') === null ) &&  <button type="button" onClick={deleteUser} className="btn btn-danger col-4 ml-1 float-right">Delete</button>}
-                {(localStorage.getItem('student') === null && localStorage.getItem('smentor') === null && localStorage.getItem('fmentor') === null ) &&  <button type="button" onClick={() => toggleAddModal(!isAddModalOpen)} className="btn btn-success col-3 ml-1 float-right">Add</button>}
-                {(localStorage.getItem('student') !== null || localStorage.getItem('smentor') !== null || localStorage.getItem('fmentor') !==null ) && <button type="button" onClick={onClickClear} className="btn btn-dark col-4 ml-1 float-right"> Back </button>}
+                {(localStorage.getItem('astudent') === null && localStorage.getItem('asmentor') === null && localStorage.getItem('afmentor') === null ) &&  <button type="button" onClick={deleteUser} className="btn btn-danger col-4 ml-1 float-right">Delete</button>}
+                {(localStorage.getItem('astudent') === null && localStorage.getItem('asmentor') === null && localStorage.getItem('afmentor') === null ) &&  <button type="button" onClick={() => toggleAddModal(!isAddModalOpen)} className="btn btn-success col-3 ml-1 float-right">Add</button>}
+                {(localStorage.getItem('astudent') !== null || localStorage.getItem('asmentor') !== null || localStorage.getItem('afmentor') !==null ) && <button type="button" onClick={onClickClear} className="btn btn-dark col-4 ml-1 float-right"> Back </button>}
                 <button type="submit"  className="btn btn-primary float-right mr-1 col-4"> Search </button>
               </div>
             </div>
@@ -1287,7 +1334,7 @@ const Profile = () => {
             <div className="form-group row">
               <div className="col-4">
                 {
-                  (localStorage.getItem('student') !== null || localStorage.getItem('smentor') !== null || localStorage.getItem('staff') !==null ) ?
+                  (localStorage.getItem('astudent') !== null || localStorage.getItem('asmentor') !== null || localStorage.getItem('afmentor') !==null ) ?
                   <select value={type} disabled name="type" className="form-control" style={{borderRadius : '5px', boxShadow : '0px 0px 2px gray'}} onChange={onPersonChange}>
                     <option>Student</option>
                     <option>Student Mentor</option>
@@ -1301,9 +1348,9 @@ const Profile = () => {
                 }
               </div>
               <div className="col-8">
-                {(localStorage.getItem('student') === null && localStorage.getItem('smentor') === null && localStorage.getItem('fmentor') === null ) &&  <button type="button" onClick={deleteUser} className="btn btn-danger col-4 ml-1 float-right">Delete</button>}
-                {(localStorage.getItem('student') === null && localStorage.getItem('smentor') === null && localStorage.getItem('fmentor') === null ) &&  <button type="button" onClick={() => toggleAddModal(!isAddModalOpen)} className="btn btn-success col-3 ml-1 float-right">Add</button>}
-                {(localStorage.getItem('student') !== null || localStorage.getItem('smentor') !== null || localStorage.getItem('staff') !==null ) && <button type="button" onClick={onClickClear} className="btn btn-dark float-right col-5 ml-1"> Clear </button>}
+                {(localStorage.getItem('astudent') === null && localStorage.getItem('asmentor') === null && localStorage.getItem('afmentor') === null ) &&  <button type="button" onClick={deleteUser} className="btn btn-danger col-4 ml-1 float-right">Delete</button>}
+                {(localStorage.getItem('astudent') === null && localStorage.getItem('asmentor') === null && localStorage.getItem('afmentor') === null ) &&  <button type="button" onClick={() => toggleAddModal(!isAddModalOpen)} className="btn btn-success col-3 ml-1 float-right">Add</button>}
+                {(localStorage.getItem('astudent') !== null || localStorage.getItem('asmentor') !== null || localStorage.getItem('afmentor') !==null ) && <button type="button" onClick={onClickClear} className="btn btn-dark float-right col-5 ml-1"> Clear </button>}
                 <button type="submit"  className="btn btn-primary float-right col-4"> Search </button>
               </div>
             </div>
@@ -1445,7 +1492,24 @@ const Profile = () => {
           </form>
         </ModalBody>
       </Modal>
-
+      <Modal isOpen = {isnewpwdModalOpen} toggle = {() =>togglenewpwdModal(!isnewpwdModalOpen)}>
+        <ModalHeader toggle={() => togglenewpwdModal(!isnewpwdModalOpen)}>Change Password</ModalHeader>
+        <ModalBody>
+          <center className='h5' style={{color:'green'}}>Check Your Email for OTP</center>
+          <form onSubmit = {submitnewpwd}>
+            <div className="form-group row">
+              <label className="form-label col-12">OTP</label>
+              <div className="col-12"><input type="text" required onChange={onnewpwdChange} className="form-control" value={otp} name="otp"/></div>
+            </div>
+            <div className="form-group row">
+              <label className="form-label col-12">New password</label>
+              <div className="col-12"><input type="text" required onChange={onnewpwdChange} className="form-control" value={pwd} name="pwd"/></div>
+            </div>
+            <button type="button" className="btn btn-success" onClick={() => togglenewpwdModal(!isnewpwdModalOpen)}>Cancel</button> &nbsp;
+            <button type="submit" className="btn btn-primary pl-4 pr-4">Submit</button>
+          </form>
+        </ModalBody>
+      </Modal>
     </div>
   )
 }

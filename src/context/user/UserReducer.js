@@ -10,8 +10,8 @@ export default (state, action) => {
   switch(action.type){
 
     case LOGIN_SUCCESS :
-      localStorage.setItem('token', action.payload.token);
-      localStorage.setItem('user', action.payload.username);
+      localStorage.setItem('atoken', action.payload.token);
+      localStorage.setItem('auser', action.payload.username);
       return {
         ...state,
         token : action.payload.token,

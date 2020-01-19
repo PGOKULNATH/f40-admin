@@ -1,5 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {Modal, ModalHeader, ModalBody} from 'reactstrap';
+import Error from './Error';
 import Loading from './Loading';
 import axios from 'axios';
 import server from '../config/server';
@@ -38,7 +39,7 @@ const Notification = () => {
 
   const onChangeTitle = async (e) => {
     setUpdate({...update, [e.target.name] : e.target.value });
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     var res = await axios.get(server + '/notificationdetails?title='+e.target.value, {headers});
     setUpdate({
       updateTitle:res.data.title,
@@ -47,7 +48,7 @@ const Notification = () => {
   }
 
   const addTask = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     let notifi = {};
     notifi.title = addTitle;
@@ -64,7 +65,7 @@ const Notification = () => {
   }
 
   const UpdateTask = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     if(updateTitle === ''){
       updateTitle = notifications[0].title
@@ -84,7 +85,7 @@ const Notification = () => {
   }
 
   const DeleteTask = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     const title = notifications[deleteId-1].title;
     toggleDeleteModal(!isDeleteModalOpen);
@@ -96,7 +97,7 @@ const Notification = () => {
   }
 
   const onClickUpdate = async () => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     toggleUpdateModal(!isUpdateModalOpen);
     var res = await axios.get(server + '/notificationdetails?title='+notifications[0].title, {headers});
     setUpdate({
@@ -112,7 +113,7 @@ const Notification = () => {
   //any error can be handle by this
   else if(notifications_error){
     console.log(notifications_error)
-    return <h1>Something goes wrong</h1>
+    return <Error />
   }
 
   return (

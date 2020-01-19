@@ -1,5 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {Modal, ModalHeader, ModalBody, CustomInput} from 'reactstrap';
+import Error from './Error';
 import Loading from './Loading';
 import axios from 'axios';
 import server from '../config/server';
@@ -32,7 +33,7 @@ const HomeContent = () => {
 
   const onChangeTitle = async (e) => {
     setUpdate({...update, 'updateTitle' : e.target.value });
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     var res = await axios.get(server + '/eventdetails?title='+e.target.value, {headers});
     setUpdate({
       updateTitle:res.data.title,
@@ -41,7 +42,7 @@ const HomeContent = () => {
   }
 
   const addTask = (event) => {
-    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     var formData = new FormData(event.target);
     toggleAddModal(!isAddModalOpen);
@@ -52,7 +53,7 @@ const HomeContent = () => {
   }
 
   const UpdateTask = (event) => {
-    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "multipart/form-data","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     var formData = new FormData(event.target);
     toggleUpdateModal(!isUpdateModalOpen);
@@ -63,7 +64,7 @@ const HomeContent = () => {
   }
 
   const DeleteTask = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     const title = events[deleteId-1].title;
     toggleDeleteModal(!isDeleteModalOpen);
@@ -75,7 +76,7 @@ const HomeContent = () => {
   }
 
   const onClickUpdate = async () => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     toggleUpdateModal(!isUpdateModalOpen);
     var res = await axios.get(server + '/eventdetails?title='+events[0].title, {headers});
     setUpdate({
@@ -91,7 +92,7 @@ const HomeContent = () => {
   //any error can be handle by this
   else if(events_error){
     console.log(events_error)
-    return <h1>Something goes wrong</h1>
+    return <Error />
   }
 
   return (

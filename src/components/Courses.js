@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {Modal, ModalHeader, ModalBody} from 'reactstrap';
 import Loading from './Loading';
+import Error from './Error';
 import axios from 'axios';
 import server from '../config/server';
 import DataContext from '../context/data/dataContext';
@@ -45,7 +46,7 @@ const Courses = () => {
 
   const onChangeTitle = async (e) => {
     setUpdate({...update, [e.target.name] : e.target.value });
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     var res = await axios.get(server + '/coursedetails?title='+e.target.value, {headers});
     setUpdate({
       updateTitle:res.data.title,
@@ -57,7 +58,7 @@ const Courses = () => {
   }
 
   const addTask = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     let course = {};
     course.title = addTitle;
@@ -80,7 +81,7 @@ const Courses = () => {
   }
 
   const UpdateTask = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     let course = {};
     course.title = updateTitle;
@@ -103,7 +104,7 @@ const Courses = () => {
   }
 
   const DeleteTask = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     const title = courses[deleteId-1].title;
     toggleDeleteModal(!isDeleteModalOpen);
@@ -115,7 +116,7 @@ const Courses = () => {
   }
 
   const onClickUpdate = async () => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     toggleUpdateModal(!isUpdateModalOpen);
     var res = await axios.get(server + '/coursedetails?title='+courses[0].title, {headers});
     setUpdate({
@@ -133,7 +134,7 @@ const Courses = () => {
 
   else if(courses_error){
     console.log(courses_error);
-    return <h1>Something goes wrong</h1>
+    return <Error />
   }
 
   return(

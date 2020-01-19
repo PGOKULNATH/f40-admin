@@ -1,5 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {Modal, ModalHeader, ModalBody} from 'reactstrap';
+import Error from './Error';
 import Loading from './Loading';
 import axios from 'axios';
 import server from '../config/server';
@@ -31,7 +32,7 @@ const Assessments = () => {
   const onChangeDelete = e => setDeleteId(e.target.value)
 
   const addTask = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     let assess = {};
     assess.assessmentType = addAssessmentType;
@@ -50,7 +51,7 @@ const Assessments = () => {
   }
 
   const DeleteTask = (event) => {
-    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('token')};
+    const headers={"Content-Type": "application/json","X-Access-Token":localStorage.getItem('atoken')};
     event.preventDefault();
     const topic = assessments[deleteId-1].topic;
     toggleDeleteModal(!isDeleteModalOpen);
@@ -67,7 +68,7 @@ const Assessments = () => {
 
   else if(assessments_error){
     console.log(assessments_error);
-    return <h1>Something goes wrong</h1>
+    return <Error />
   }
 
   return(

@@ -24,14 +24,14 @@ const MyNavbar = () => {
     getStudents();
     getSmentors();
     getFmentors();
-    if(localStorage.getItem('student') !== null){
+    if(localStorage.getItem('astudent') !== null){
       getProfile();
       getAttendance();
     }
-    else if(localStorage.getItem('smentor') !== null){
+    else if(localStorage.getItem('asmentor') !== null){
       getsmProfile();
     }
-    else if(localStorage.getItem('fmentor') !== null){
+    else if(localStorage.getItem('afmentor') !== null){
       getfmProfile();
     }
     //eslint-disable-next-line
@@ -48,16 +48,16 @@ const MyNavbar = () => {
       />
       <Navbar.Collapse id="navbarSupportedContent">
         <Nav className="mr-auto" >
-          <Link className="nav-link" style={{color : 'white'}} to={"/"}>Home</Link>
-          <Link className="nav-link" to={"/Profile"} style={{color : 'white'}}>Profile</Link>
-          <Link className="nav-link" to={"/Attendance"} style={{color : 'white'}}>Attendance</Link>
-          <Link className="nav-link" to={"/Assessments"} style={{color : 'white'}}>Assessments</Link>
-          <Link className="nav-link" to={"/Notification"} style={{color : 'white'}}>Notification</Link>
-          <Link className="nav-link" to={"/Courses"} style={{color : 'white'}}> Courses </Link>
+          <Link className="nav-link" style={{color : 'white'}} to={"/admin/"}>Home</Link>
+          <Link className="nav-link" to={"/admin/Profile"} style={{color : 'white'}}>Profile</Link>
+          <Link className="nav-link" to={"/admin/Attendance"} style={{color : 'white'}}>Attendance</Link>
+          <Link className="nav-link" to={"/admin/Assessments"} style={{color : 'white'}}>Assessments</Link>
+          <Link className="nav-link" to={"/admin/Notification"} style={{color : 'white'}}>Notification</Link>
+          <Link className="nav-link" to={"/admin/Courses"} style={{color : 'white'}}> Courses </Link>
         </Nav>
       </Navbar.Collapse>
       <span className="navbar-text mr-2" style={{color : 'white'}}>Hi {user}!</span>
-      <Link className="btn btn-outline-danger" to = {"/"} onClick={() => logout()}> Logout </Link>
+      <Link className="btn btn-outline-danger" to = {"/admin/"} onClick={() => logout()}> Logout </Link>
     </Navbar>
   );
 };
